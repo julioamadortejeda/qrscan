@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 //import 'package:qrcode_reader/qrcode_reader.dart';
 
 //Custom imports
+import 'package:qrscan/src/bloc/scans_bloc.dart';
+import 'package:qrscan/src/models/scan_model.dart';
+
 import 'package:qrscan/src/pages/direcciones_page.dart';
 import 'package:qrscan/src/pages/mapas_page.dart';
 
@@ -12,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final scansBloc = new ScansBloc();
   int currentIndex = 0;
 
   @override
@@ -22,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete_forever),
-            onPressed: () {},
+            onPressed: scansBloc.borrarAllScans,
           )
         ],
       ),
@@ -32,7 +36,9 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
         backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () {},
+        onPressed: () {
+          _scannQR();
+        },
       ),
     );
   }
@@ -67,19 +73,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   _scannQR() async {
-
     //https://fernando-herrera.com
     //geo:40.724233047051705,-74.00731459101564
 
-    String futureString = '';
+    String futureString = 'https://fernando-herrera.com';
     // try {
     //   futureString = await new QRCodeReader().scan();
     // } catch (e) {
     //   futureString = e.toString();
     // }
 
-    // if (futureString != null) {
-    //   print('INFORMACION DEL QR SCANN');
-    // }
+    if (futureString != null) {
+      final scan = ScanModel(valor: futureString);
+      scansBloc.agregarScan(scan);
+    }
   }
 }
