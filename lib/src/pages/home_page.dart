@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 //import 'package:qrcode_reader/qrcode_reader.dart';
@@ -8,6 +9,8 @@ import 'package:qrscan/src/models/scan_model.dart';
 
 import 'package:qrscan/src/pages/direcciones_page.dart';
 import 'package:qrscan/src/pages/mapas_page.dart';
+
+import 'package:qrscan/src/utils/utils.dart' as utils;
 
 class HomePage extends StatefulWidget {
   @override
@@ -36,9 +39,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
         backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () {
-          _scannQR();
-        },
+        onPressed: () => _scannQR(context),
       ),
     );
   }
@@ -72,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _scannQR() async {
+  _scannQR(BuildContext context) async {
     //https://fernando-herrera.com
     //geo:40.724233047051705,-74.00731459101564
 
@@ -86,6 +87,18 @@ class _HomePageState extends State<HomePage> {
     if (futureString != null) {
       final scan = ScanModel(valor: futureString);
       scansBloc.agregarScan(scan);
+
+      final scan2 =
+          ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
+      scansBloc.agregarScan(scan2);
+
+      if (Platform.isIOS) {
+        Future.delayed(Duration(milliseconds: 750), () {
+          utils.abrirScan(context, scan);
+        });
+      } else {
+        utils.abrirScan(context, scan);
+      }
     }
   }
 }
