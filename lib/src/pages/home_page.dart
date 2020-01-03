@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-//import 'package:qrcode_reader/qrcode_reader.dart';
-
 //Custom imports
+//import 'package:qrcode_reader/qrcode_reader.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:qrscan/src/bloc/scans_bloc.dart';
 import 'package:qrscan/src/models/scan_model.dart';
 
@@ -77,20 +77,21 @@ class _HomePageState extends State<HomePage> {
     //https://fernando-herrera.com
     //geo:40.724233047051705,-74.00731459101564
 
-    String futureString = 'https://fernando-herrera.com';
-    // try {
-    //   futureString = await new QRCodeReader().scan();
-    // } catch (e) {
-    //   futureString = e.toString();
-    // }
+    String futureString;
+    try {
+      futureString = await BarcodeScanner.scan();
+    } catch (e) {
+      futureString = e.toString();
+      return;
+    }
 
     if (futureString != null) {
       final scan = ScanModel(valor: futureString);
       scansBloc.agregarScan(scan);
 
-      final scan2 =
-          ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
-      scansBloc.agregarScan(scan2);
+      // final scan2 =
+      //     ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
+      // scansBloc.agregarScan(scan2);
 
       if (Platform.isIOS) {
         Future.delayed(Duration(milliseconds: 750), () {
